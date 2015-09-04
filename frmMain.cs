@@ -2,6 +2,8 @@
 using System.Linq;
 using System.ServiceProcess;
 using System.Windows.Forms;
+using Microsoft.Win32.TaskScheduler;
+using CommandLine;
 
 namespace PgMonFork
 {
@@ -25,17 +27,38 @@ namespace PgMonFork
             base.SetVisibleCore(false);
         }
 
+        private void RegisterTask()
+        {
+            var currentFn = System.Reflection.Assembly.GetEntryAssembly().Location;
+            using (var ts = new TaskService()) {
+                var task = ts.NewTask();
+                task.Triggers.Add(Trigger.CreateTrigger(TaskTriggerType.Logon));
+                task.Settings.StopIfGoingOnBatteries = false;
+                task.Settings.DisallowStartIfOnBatteries = false;
+                task.Principal.RunLevel = TaskRunLevel.Highest;
+                task.Settings.IdleSettings.StopOnIdleEnd = false;
+                task.Settings.ExecutionTimeLimit = TimeSpan.FromDays(730);
+                task.Actions.Add(new ExecAction(currentFn, "", null));
+                ts.RootFolder.RegisterTaskDefinition(@"PgMonFork", task);
+            }
+        }
+
         private void InitApp()
         {
-            int refreshEvery = 2; //default update interval (in seconds)
             string[] args = Environment.GetCommandLineArgs();
-            if (args.Length > 1) {
-                int refreshEveryArg;
-                Int32.TryParse(args[1], out refreshEveryArg);
-                if (refreshEveryArg >= 1) {
-                    refreshEvery = refreshEveryArg;
+            var result = Parser.Default.ParseArguments<CmdOptions>(args);
+
+            int refreshEvery = 2;
+
+            result.WithParsed(p => {
+                if(p.InstallTask) {
+                    RegisterTask();
                 }
-            }
+                if(p.Interval >= 1) {
+                    refreshEvery = p.Interval;
+                }
+            }).WithNotParsed(p => MessageBox.Show($"Invalid arguments, using defaults"));
+
             timerScanService.Interval = refreshEvery * 1000;
             this.updateIntervalToolStripMenuItem.Text = $"Refresh interval: {refreshEvery} seconds";
 

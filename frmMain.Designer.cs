@@ -32,14 +32,13 @@
             this.timerScanService = new System.Windows.Forms.Timer(this.components);
             this.traynotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.updateIntervalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // timerScanService
             // 
-            this.timerScanService.Enabled = true;
             this.timerScanService.Interval = 2000;
             this.timerScanService.Tick += new System.EventHandler(this.timer1_Tick);
             // 
@@ -58,13 +57,6 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(158, 48);
             // 
-            // toolStripMenuItemExit
-            // 
-            this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
-            this.toolStripMenuItemExit.Size = new System.Drawing.Size(157, 22);
-            this.toolStripMenuItemExit.Text = "&Exit";
-            this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
-            // 
             // updateIntervalToolStripMenuItem
             // 
             this.updateIntervalToolStripMenuItem.Enabled = false;
@@ -72,11 +64,18 @@
             this.updateIntervalToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.updateIntervalToolStripMenuItem.Text = "Update interval:";
             // 
+            // toolStripMenuItemExit
+            // 
+            this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
+            this.toolStripMenuItemExit.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemExit.Text = "&Exit";
+            this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(231, 90);
+            this.ClientSize = new System.Drawing.Size(230, 0);
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.ShowInTaskbar = false;

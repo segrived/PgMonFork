@@ -4,6 +4,8 @@ using System.ServiceProcess;
 using System.Windows.Forms;
 using Microsoft.Win32.TaskScheduler;
 using CommandLine;
+using System.Drawing;
+using System.IO;
 
 namespace PgMonFork
 {
@@ -13,6 +15,10 @@ namespace PgMonFork
         {
             Start, Stop, Restart
         }
+
+        private Icon StartingIcon;
+        private Icon StartedIcon;
+        private Icon StoppedIcon;
 
         private ServiceController pgservice;
 
@@ -43,8 +49,25 @@ namespace PgMonFork
             }
         }
 
+        private string GetExecutableDirectory()
+        {
+            var currentFn = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var exeDirectory = Path.GetDirectoryName(currentFn);
+            return exeDirectory;
+        }
+
         private void InitApp()
         {
+            try {
+                string iconsDirectory = Path.Combine(GetExecutableDirectory(), "Icons");
+                StartingIcon = new Icon(Path.Combine(iconsDirectory, "starting.ico"));
+                StartedIcon = new Icon(Path.Combine(iconsDirectory, "started.ico"));
+                StoppedIcon = new Icon(Path.Combine(iconsDirectory, "stopped.ico"));
+            } catch (Exception e) {
+                MessageBox.Show($"Error while loading icons: {e.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
             string[] args = Environment.GetCommandLineArgs();
             var result = Parser.Default.ParseArguments<CmdOptions>(args);
 
@@ -70,6 +93,7 @@ namespace PgMonFork
                 MessageBox.Show("Service not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
+            timerScanService.Enabled = true;
         }
 
         public void RefreshTrayIcon()
@@ -78,12 +102,12 @@ namespace PgMonFork
             pgservice.Refresh();
 
             if (pgservice.Status == ServiceControllerStatus.Running) {
-                traynotifyIcon.Icon = Properties.Resources.Started;
+                traynotifyIcon.Icon = StartedIcon;
             } else if (pgservice.Status == ServiceControllerStatus.Stopped) {
-                traynotifyIcon.Icon = Properties.Resources.Stopped;
+                traynotifyIcon.Icon = StoppedIcon;
             } else if(pgservice.Status == ServiceControllerStatus.StartPending 
                 || pgservice.Status == ServiceControllerStatus.StopPending) {
-                traynotifyIcon.Icon = Properties.Resources.Starting;
+                traynotifyIcon.Icon = StartingIcon;
             } 
         }
 

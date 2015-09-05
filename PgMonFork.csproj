@@ -121,10 +121,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\play.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\stop.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Started.ico" />
@@ -134,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
+    <None Include="Resources\Starting.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

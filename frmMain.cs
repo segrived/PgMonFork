@@ -81,7 +81,10 @@ namespace PgMonFork
                 traynotifyIcon.Icon = Properties.Resources.Started;
             } else if (pgservice.Status == ServiceControllerStatus.Stopped) {
                 traynotifyIcon.Icon = Properties.Resources.Stopped;
-            }
+            } else if(pgservice.Status == ServiceControllerStatus.StartPending 
+                || pgservice.Status == ServiceControllerStatus.StopPending) {
+                traynotifyIcon.Icon = Properties.Resources.Starting;
+            } 
         }
 
         private void timer1_Tick(object sender, EventArgs e)
